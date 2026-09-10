@@ -1,0 +1,64 @@
+%option noyywrap
+%x VOTI
+
+ws [ \n\t]+
+COURSE_CODE [A-Z][0-9][0-9][0-9]
+COURSE_NAME \"[A-Za-z 0-9]+\"
+CFU [0-9]|1[0-9]|20
+FIRST_NAME "Nome: "[A-Z][a-z]*
+LAST_NAME "Cognome: "[A-Z][a-z]*
+VOTO 1[89]|2[0-9]|30
+
+/*SEZ 2*/
+MATRICOLA [0-9]{10}
+
+
+%%
+{ws}
+"%%%" {printf("SEP ");}
+{COURSE_CODE} {printf("CC ");}
+{COURSE_NAME} {printf("CN ");}
+{CFU} {printf("CFU ");}
+{MATRICOLA} {printf("MATRICOLA ");}
+{FIRST_NAME} {printf("FIRST_NAME ");}
+{LAST_NAME} {printf("LAST_NAME ");}
+"30l" {printf("LODE ");}
+"&&&" {printf("SEP_2 ");}
+"<" {
+    printf("LAB ");
+    BEGIN(VOTI);
+}
+<VOTI>{ws}              ;
+<VOTI>{COURSE_CODE}     { printf("CC "); }
+<VOTI>"30l"             { printf("LODE "); }
+<VOTI>{VOTO}            { printf("VOTO "); }
+<VOTI>":"               { printf("COL "); }
+<VOTI>","               { printf("COMMA "); }
+
+
+<VOTI>">" {
+    printf("RAB ");
+    BEGIN(INITIAL);
+}
+
+<VOTI>. { return *yytext; }
+.       { return *yytext; }
+
+%%
+int main(int argc, char **argv)
+{
+    if (argc != 2) {
+        fprintf(stderr, "Uso: %s file_input\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    yyin = fopen(argv[1], "r");
+    if (yyin == NULL) {
+        return EXIT_FAILURE;
+    }
+
+    yylex();
+
+    fclose(yyin);
+    return EXIT_SUCCESS;
+}

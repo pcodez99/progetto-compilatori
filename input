@@ -1,0 +1,20 @@
+L413 "Programmazione e Laboratorio" 12
+Y250 "Compilatori" 6
+X022 "Algoritmi e Strutture Dati" 9
+%%%
+2055002161
+Nome: Giacomo
+Cognome: Secchia
+&&&
+3567929861
+Nome: Mario
+Cognome: Scarsini
+&&&
+2012929201
+Nome: Gaetano
+Cognome: Mediano
+%%%
+2012929201 <L413 : 25, X022 : 30l, Y250 : 21>
+3567929861 <>
+2055002161 <L413 : 30, Y250 : 30l, X022 : 30l>
+
