@@ -42,34 +42,36 @@
      CC = 258,
      CN = 259,
      MATRICOLA = 260,
-     FIRST_NAME = 261,
-     LAST_NAME = 262,
-     LODE = 263,
-     CFU = 264,
-     VOTO = 265,
-     SEP = 266,
-     SEP_2 = 267,
-     LAB = 268,
-     RAB = 269,
-     COL = 270,
-     COMMA = 271
+     STR = 261,
+     LODE = 262,
+     T_FIRST_NAME = 263,
+     T_LAST_NAME = 264,
+     CFU = 265,
+     VOTO = 266,
+     SEP = 267,
+     SEP_2 = 268,
+     LAB = 269,
+     RAB = 270,
+     COL = 271,
+     COMMA = 272
    };
 #endif
 /* Tokens.  */
 #define CC 258
 #define CN 259
 #define MATRICOLA 260
-#define FIRST_NAME 261
-#define LAST_NAME 262
-#define LODE 263
-#define CFU 264
-#define VOTO 265
-#define SEP 266
-#define SEP_2 267
-#define LAB 268
-#define RAB 269
-#define COL 270
-#define COMMA 271
+#define STR 261
+#define LODE 262
+#define T_FIRST_NAME 263
+#define T_LAST_NAME 264
+#define CFU 265
+#define VOTO 266
+#define SEP 267
+#define SEP_2 268
+#define LAB 269
+#define RAB 270
+#define COL 271
+#define COMMA 272
 
 
 
@@ -82,7 +84,7 @@ typedef union YYSTYPE
     int int_token;
 }
 /* Line 1529 of yacc.c.  */
-#line 86 "symb.tab.h"
+#line 88 "symb.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

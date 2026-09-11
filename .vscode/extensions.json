@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "theodevelop.bison-flex-lang"
+  ],
+  "unwantedRecommendations": [
+    "mikawi.flex-language"
+  ]
+}

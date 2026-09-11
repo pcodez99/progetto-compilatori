@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.fl": "flex"
+  },
+  "bisonFlex.enableDiagnostics": true,
+  "bisonFlex.flexPath": "flex"
+}

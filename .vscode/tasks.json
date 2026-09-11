@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Flex: lint file corrente",
+      "type": "process",
+      "command": "flex",
+      "args": [
+        "-o",
+        "/dev/null",
+        "${file}"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "clear": true,
+        "reveal": "silent"
+      },
+      "problemMatcher": {
+        "owner": "flex",
+        "fileLocation": "absolute",
+        "pattern": {
+          "regexp": "^(.*?):([0-9]+):\\s*(.*)$",
+          "file": 1,
+          "line": 2,
+          "message": 3
+        }
+      }
+    }
+  ]
+}
