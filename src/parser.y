@@ -3,9 +3,12 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include "symb_tab.h"
-    int yylex(void);
+    int yylex();
     void yyerror (char const *);
     extern FILE *yyin;
+
+    char *studente_corrente;
+    char *corso_corrente;
 %}
 
 %union {
@@ -31,7 +34,7 @@ Elenco_Corsi: Corso
     | Corso Elenco_Corsi
     ;
 
-Corso: CC CN CFU 
+Corso: CC CN CFU {inserisci_corso($1, $2, $3);}
     ;
 
 Sez_2: Elenco_Studenti
@@ -41,7 +44,7 @@ Elenco_Studenti: Studente
     | Studente SEP_2 Elenco_Studenti
     ;
 
-Studente: MATRICOLA T_FIRST_NAME COL STR T_LAST_NAME COL STR
+Studente: MATRICOLA T_FIRST_NAME COL STR T_LAST_NAME COL STR {inserisci_studente($1, $4, $7);}
     ;
 
 Sez_3: Elenco_Carriere
@@ -51,7 +54,7 @@ Elenco_Carriere: Carriera
     | Carriera Elenco_Carriere
     ;
 
-Carriera: MATRICOLA LAB Elenco_Esami RAB
+Carriera: MATRICOLA {studente_corrente = $1;} LAB Elenco_Esami RAB
     ;
 
 Elenco_Esami: Esame
@@ -59,11 +62,11 @@ Elenco_Esami: Esame
     | Esame COMMA Elenco_Esami
     ;
 
-Esame: CC COL Voto
+Esame: CC {corso_corrente = $1;} COL Voto
     ;
 
-Voto: VOTO
-    | LODE
+Voto: VOTO {inserisci_esame(studente_corrente, corso_corrente, $1, 0);}
+    | LODE {inserisci_esame(studente_corrente, corso_corrente, 30, 1);}
     ;
 
 %%
@@ -80,10 +83,11 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    if (yyparse() == 0)
+    if (yyparse() == 0) {
         printf("Input accettato\n");
-    else
-        printf("Input rifiutato\n");
+        stampa_risultati();
+    }
+    else printf("Input rifiutato\n");
 
     fclose(yyin);
     return EXIT_SUCCESS;

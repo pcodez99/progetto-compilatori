@@ -78,6 +78,9 @@ Studente *inserisci_studente(char *matricola, char *nome, char *cognome) {
         studente->cognome = strdup(cognome);
         studente->matricola = strdup(matricola);
         studente->esami = NULL;
+        studente->bests = NULL;
+        studente->max = 0;
+        studente->media = 0.0f;
         hashval = hash(matricola);
         studente->next = hash_table_studenti[hashval];
         hash_table_studenti[hashval] = studente;
@@ -113,31 +116,32 @@ Esame *inserisci_esame(char *matricola, char *codice_corso, unsigned int voto, i
     if (studente == NULL || corso == NULL) return NULL; //Studente oppure corso non trovato...
 
     if ((esame = cerca_esame(studente->esami, corso->codice)) == NULL) {
-        esame = malloc(sizeof(*esame));
-        if (esame == NULL)
-            return NULL;
 
-        esame->corso = corso;
-        esame->voto = voto;
-        esame->lode = lode != 0;
+        if ((esame = malloc(sizeof(*esame))) == NULL) return NULL;
+
+    unsigned int valore = lode ? 31 : voto;
+
+    esame->corso = corso;
+    esame->voto = voto;
+    esame->lode = lode != 0;
+    esame->next_best = NULL;
+
+    if (studente->bests == NULL || valore > studente->max) {
+        /* È il primo esame oppure è stato trovato un nuovo massimo. */
+        studente->max = valore;
+        studente->bests = esame;
+    } else if (valore == studente->max) {
+        /* Esame con voto uguale al massimo corrente. */
+        esame->next_best = studente->bests;
+        studente->bests = esame;
+    }
         esame->next = studente->esami;
         studente->esami = esame;
     }
 
+    studente->media = calcola_media(studente);
+
     return esame;
-}
-
-unsigned int calcola_cfu(Studente *studente) {
-    Esame *esame;
-    unsigned int totale = 0;
-
-    if (studente == NULL)
-        return 0;
-
-    for (esame = studente->esami; esame != NULL; esame = esame->next)
-        totale += esame->corso->cfu;
-
-    return totale;
 }
 
 double calcola_media(Studente *studente) {
@@ -160,15 +164,17 @@ double calcola_media(Studente *studente) {
 void stampa_risultati(void) {
     unsigned int i;
     Studente *studente;
-
+    Esame *best;
     for (i = 0; i < HASHSIZE; i++) {
         for (studente = hash_table_studenti[i]; studente != NULL; studente = studente->next) {
-            printf("%s %s %s: CFU %u, media %.2f\n",
-                   studente->matricola,
-                   studente->nome,
-                   studente->cognome,
-                   calcola_cfu(studente),
-                   calcola_media(studente));
+            printf("%s %s %f ", studente->nome, studente->cognome, studente->media);
+            printf("<");
+            for(best = studente->bests; best != NULL; best = best->next_best) {
+                printf("%s", best->corso->nome);
+
+                if (best->next_best != NULL) printf(", ");
+            }
+            printf(">\n");
         }
     }
 }

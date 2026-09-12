@@ -17,6 +17,7 @@ typedef struct esame {
     unsigned int voto;
     int lode;
     struct esame *next;
+    struct esame *next_best;
 } Esame;
 
 //struttura per studente
@@ -24,7 +25,10 @@ typedef struct studente {
     char *matricola;
     char *nome;
     char *cognome;
+    unsigned int max;
+    float media;
     Esame *esami;
+    Esame *bests;
     struct studente *next;
 } Studente;
 
