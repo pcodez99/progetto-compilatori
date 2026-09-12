@@ -54,11 +54,20 @@ Elenco_Carriere: Carriera
     | Carriera Elenco_Carriere
     ;
 
-Carriera: MATRICOLA {studente_corrente = $1;} LAB Elenco_Esami RAB
+Carriera: MATRICOLA {
+        if (lookup_studente($1) == NULL) {
+            fprintf(stderr, "error: semantic error: undeclared student '%s'\n", $1);
+            exit(0);
+        }
+        studente_corrente = $1;
+    } LAB Esami_Opzionali RAB
+    ;
+
+Esami_Opzionali: Elenco_Esami
+    |
     ;
 
 Elenco_Esami: Esame
-    |
     | Esame COMMA Elenco_Esami
     ;
 
@@ -97,7 +106,7 @@ int main(int argc, char **argv) {
 
     if (yyparse() == 0) {
         salva_risultati(output);
-    } else printf("Input rifiutato\n");
+    } else printf("Errore di parsing\n");
 
     fclose(yyin);
     fclose(output);
@@ -106,5 +115,5 @@ int main(int argc, char **argv) {
 }
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Errore sintattico: %s\n", s);
+    fprintf(stderr, "error: %s\n", s);
 }

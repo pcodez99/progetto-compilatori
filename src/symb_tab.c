@@ -113,7 +113,14 @@ Esame *inserisci_esame(char *matricola, char *codice_corso, unsigned int voto, i
     studente = lookup_studente(matricola);
     corso = lookup_corso(codice_corso);
 
-    if (studente == NULL || corso == NULL) return NULL; //Studente oppure corso non trovato...
+    if (studente == NULL) {
+        fprintf(stderr, "error: semantic error: undeclared student '%s'\n", matricola);
+        exit(0);
+    }
+    if (corso == NULL) {
+        fprintf(stderr, "error: semantic error: undeclared course '%s'\n", codice_corso);
+        exit(0);
+    }
 
     if ((esame = cerca_esame(studente->esami, corso->codice)) == NULL) {
 
