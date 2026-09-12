@@ -1,5 +1,4 @@
-#ifndef SYMB_TAB_H
-#define SYMB_TAB_H
+#include <stdio.h>
 
 #define HASHSIZE 101
 
@@ -11,7 +10,7 @@ typedef struct corso {
     struct corso *next;
 } Corso;
 
-/*struttura per esame*/
+//struttura per esame
 typedef struct esame {
     Corso *corso;
     unsigned int voto;
@@ -40,7 +39,5 @@ Studente *inserisci_studente(char *matricola, char *nome, char *cognome);
 Esame *inserisci_esame(char *matricola, char *codice_corso, unsigned int voto, int lode);
 unsigned int calcola_cfu(Studente *studente);
 double calcola_media(Studente *studente);
-void stampa_risultati(void);
+void salva_risultati(FILE *output);
 void libera_tabelle(void);
-
-#endif

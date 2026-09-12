@@ -161,20 +161,22 @@ double calcola_media(Studente *studente) {
     return (double)somma_pesata / cfu_totali;
 }
 
-void stampa_risultati(void) {
+void salva_risultati(FILE *output) {
     unsigned int i;
     Studente *studente;
     Esame *best;
+
+    if (output == NULL) return;
+
     for (i = 0; i < HASHSIZE; i++) {
         for (studente = hash_table_studenti[i]; studente != NULL; studente = studente->next) {
-            printf("%s %s %f ", studente->nome, studente->cognome, studente->media);
-            printf("<");
+            fprintf(output, "%s %s %f <", studente->nome, studente->cognome, studente->media);
             for(best = studente->bests; best != NULL; best = best->next_best) {
-                printf("%s", best->corso->nome);
+                fprintf(output, "%s", best->corso->nome);
 
-                if (best->next_best != NULL) printf(", ");
+                if (best->next_best != NULL) fprintf(output, ", ");
             }
-            printf(">\n");
+            fprintf(output, ">\n");
         }
     }
 }

@@ -1622,12 +1622,16 @@ yyreturn:
 
 #line 72 "parser.y"
 
-int main(int argc, char **argv)
-{
-    if (argc != 2) {
-        fprintf(stderr, "Uso: %s file_input\n", argv[0]);
+int main(int argc, char **argv) {
+    FILE *output;
+    const char *nome_output;
+
+    if (argc < 2 || argc > 3) {
+        fprintf(stderr, "Uso: %s file_input [file_output]\n", argv[0]);
         return EXIT_FAILURE;
     }
+
+    nome_output = argc == 3 ? argv[2] : "output";
 
     yyin = fopen(argv[1], "r");
     if (yyin == NULL) {
@@ -1635,17 +1639,25 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    if (yyparse() == 0) {
-        printf("Input accettato\n");
-        stampa_risultati();
+    output = fopen(nome_output, "w");
+    
+    if(output == NULL) {
+        perror(nome_output);
+        fclose(yyin);
+        return EXIT_FAILURE;
     }
-    else printf("Input rifiutato\n");
+
+    if (yyparse() == 0) {
+        salva_risultati(output);
+    } else printf("Input rifiutato\n");
 
     fclose(yyin);
+    fclose(output);
+    libera_tabelle();
     return EXIT_SUCCESS;
 }
-void yyerror(const char *s)
-{
+
+void yyerror(const char *s) {
     fprintf(stderr, "Errore sintattico: %s\n", s);
 }
 
