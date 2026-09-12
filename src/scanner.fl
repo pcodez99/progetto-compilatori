@@ -18,7 +18,12 @@ STR [A-Za-z][A-Za-z]*
 {ws}
 "%%%" {return SEP;}
 {COURSE_CODE} {yylval.string_token = strdup(yytext); return CC;}
-{COURSE_NAME} {yylval.string_token = strdup(yytext); return CN; }
+{COURSE_NAME} {
+	char *str=strdup(yytext+1);
+	str[strlen(str)-1] ='\0';
+	yylval.string_token=str;
+	return CN;
+}
 {CFU} {yylval.int_token = atoi(yytext); return CFU; }
 {MATRICOLA} {yylval.string_token = strdup(yytext); return MATRICOLA; }
 "Nome" { return T_FIRST_NAME; }
