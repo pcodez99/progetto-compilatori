@@ -17,7 +17,7 @@
 }
 
 %token <string_token> CC CN MATRICOLA STR
-%token LODE  T_FIRST_NAME T_LAST_NAME
+%token LODE T_FIRST_NAME T_LAST_NAME
 %token <int_token> CFU VOTO
 %token SEP SEP_2 LAB RAB COL COMMA
 
