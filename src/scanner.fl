@@ -1,0 +1,46 @@
+%option noyywrap noinput nounput
+%{
+    #include "parser.tab.h"
+    #include <string.h>
+    #include <stdlib.h>
+%}
+%x VOTI
+
+ws [ \n\t]+
+COURSE_CODE [A-Z][0-9][0-9][0-9]
+COURSE_NAME \"[A-Za-z 0-9]+\"
+CFU [0-9]|1[0-9]|20
+VOTO 1[89]|2[0-9]|30
+MATRICOLA [0-9]{10}
+STR [A-Za-z][A-Za-z]*
+
+%%
+{ws}
+"%%%" {return SEP;}
+{COURSE_CODE} {yylval.string_token = strdup(yytext); return CC;}
+{COURSE_NAME} {yylval.string_token = strdup(yytext); return CN; }
+{CFU} {yylval.int_token = atoi(yytext); return CFU; }
+{MATRICOLA} {yylval.string_token = strdup(yytext); return MATRICOLA; }
+"Nome" { return T_FIRST_NAME; }
+"Cognome" { return T_LAST_NAME; }
+{STR} {yylval.string_token = strdup(yytext); return STR; }
+":"           { return COL; }
+"&&&" { return SEP_2; }
+"<" {
+    BEGIN(VOTI);
+    return LAB;
+}
+<VOTI>{ws}              ;
+<VOTI>{COURSE_CODE} {yylval.string_token = strdup(yytext); return CC; }
+<VOTI>"30l"         { return LODE; }
+<VOTI>{VOTO}        {yylval.int_token = atoi(yytext); return VOTO; }
+<VOTI>":"           { return COL; }
+<VOTI>","           { return COMMA; }
+
+<VOTI>">" {
+    BEGIN(INITIAL);
+    return RAB;
+}
+<VOTI>. { return *yytext; }
+
+%%
