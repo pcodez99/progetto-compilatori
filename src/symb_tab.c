@@ -4,6 +4,8 @@
 
 #include "symb_tab.h"
 
+extern int yylineno;
+
 Corso *hash_table_corsi[HASHSIZE] = {NULL};
 Studente *hash_table_studenti[HASHSIZE] = {NULL};
 
@@ -114,11 +116,11 @@ Esame *inserisci_esame(char *matricola, char *codice_corso, unsigned int voto, i
     corso = lookup_corso(codice_corso);
 
     if (studente == NULL) {
-        fprintf(stderr, "error: semantic error: undeclared student '%s'\n", matricola);
+        fprintf(stderr, "error: line %d: semantic error: undeclared student '%s'\n", yylineno, matricola);
         exit(0);
     }
     if (corso == NULL) {
-        fprintf(stderr, "error: semantic error: undeclared course '%s'\n", codice_corso);
+        fprintf(stderr, "error: line %d: semantic error: undeclared course '%s'\n", yylineno, codice_corso);
         exit(0);
     }
 

@@ -112,6 +112,7 @@
     int yylex();
     void yyerror (char const *);
     extern FILE *yyin;
+    extern int yylineno;
 
     char *studente_corrente;
     char *corso_corrente;
@@ -137,13 +138,13 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 14 "parser.y"
+#line 15 "parser.y"
 {
     char* string_token;
     int int_token;
 }
 /* Line 193 of yacc.c.  */
-#line 147 "parser.tab.c"
+#line 148 "parser.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -156,7 +157,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 160 "parser.tab.c"
+#line 161 "parser.tab.c"
 
 #ifdef short
 # undef short
@@ -447,9 +448,9 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    27,    27,    30,    33,    34,    37,    40,    43,    44,
-      47,    50,    53,    54,    57,    57,    66,    67,    70,    71,
-      74,    74,    77,    78
+       0,    28,    28,    31,    34,    35,    38,    41,    44,    45,
+      48,    51,    54,    55,    58,    58,    67,    68,    71,    72,
+      75,    75,    78,    79
 };
 #endif
 
@@ -1375,20 +1376,20 @@ yyreduce:
   switch (yyn)
     {
         case 6:
-#line 37 "parser.y"
+#line 38 "parser.y"
     {inserisci_corso((yyvsp[(1) - (3)].string_token), (yyvsp[(2) - (3)].string_token), (yyvsp[(3) - (3)].int_token));;}
     break;
 
   case 10:
-#line 47 "parser.y"
+#line 48 "parser.y"
     {inserisci_studente((yyvsp[(1) - (7)].string_token), (yyvsp[(4) - (7)].string_token), (yyvsp[(7) - (7)].string_token));;}
     break;
 
   case 14:
-#line 57 "parser.y"
+#line 58 "parser.y"
     {
         if (lookup_studente((yyvsp[(1) - (1)].string_token)) == NULL) {
-            fprintf(stderr, "error: semantic error: undeclared student '%s'\n", (yyvsp[(1) - (1)].string_token));
+            fprintf(stderr, "error: line %d: semantic error: undeclared student '%s'\n", yylineno, (yyvsp[(1) - (1)].string_token));
             exit(0);
         }
         studente_corrente = (yyvsp[(1) - (1)].string_token);
@@ -1396,23 +1397,23 @@ yyreduce:
     break;
 
   case 20:
-#line 74 "parser.y"
+#line 75 "parser.y"
     {corso_corrente = (yyvsp[(1) - (1)].string_token);;}
     break;
 
   case 22:
-#line 77 "parser.y"
+#line 78 "parser.y"
     {inserisci_esame(studente_corrente, corso_corrente, (yyvsp[(1) - (1)].int_token), 0);;}
     break;
 
   case 23:
-#line 78 "parser.y"
+#line 79 "parser.y"
     {inserisci_esame(studente_corrente, corso_corrente, 30, 1);;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1416 "parser.tab.c"
+#line 1417 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1626,7 +1627,7 @@ yyreturn:
 }
 
 
-#line 81 "parser.y"
+#line 82 "parser.y"
 
 int main(int argc, char **argv) {
     FILE *output;
@@ -1664,6 +1665,6 @@ int main(int argc, char **argv) {
 }
 
 void yyerror(const char *s) {
-    fprintf(stderr, "error: %s\n", s);
+    fprintf(stderr, "error: line %d: %s\n", yylineno, s);
 }
 

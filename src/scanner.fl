@@ -1,4 +1,4 @@
-%option noyywrap noinput nounput
+%option noyywrap noinput nounput yylineno
 %{
     #include "parser.tab.h"
     #include <string.h>
@@ -100,7 +100,7 @@ STR [A-Za-z][A-Za-z]*
 }
 
 <*>. {
-    fprintf(stderr, "error: lexical error: invalid character '%c'\n", *yytext);
+    fprintf(stderr, "error: line %d: lexical error: invalid character '%c'\n", yylineno, *yytext);
     return *yytext;
 }
 

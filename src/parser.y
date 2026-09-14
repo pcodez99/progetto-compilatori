@@ -6,6 +6,7 @@
     int yylex();
     void yyerror (char const *);
     extern FILE *yyin;
+    extern int yylineno;
 
     char *studente_corrente;
     char *corso_corrente;
@@ -56,7 +57,7 @@ Elenco_Carriere: Carriera
 
 Carriera: MATRICOLA {
         if (lookup_studente($1) == NULL) {
-            fprintf(stderr, "error: semantic error: undeclared student '%s'\n", $1);
+            fprintf(stderr, "error: line %d: semantic error: undeclared student '%s'\n", yylineno, $1);
             exit(0);
         }
         studente_corrente = $1;
@@ -115,5 +116,5 @@ int main(int argc, char **argv) {
 }
 
 void yyerror(const char *s) {
-    fprintf(stderr, "error: %s\n", s);
+    fprintf(stderr, "error: line %d: %s\n", yylineno, s);
 }
