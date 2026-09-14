@@ -3,7 +3,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include "symb_tab.h"
-    int yylex();
+    int yylex(void);
     void yyerror (char const *);
     extern FILE *yyin;
     extern int yylineno;
@@ -113,7 +113,13 @@ int main(int argc, char **argv) {
 
     if (yyparse() == 0) {
         salva_risultati(output);
-    } else printf("Errore di parsing\n");
+    } else {
+        fprintf(stderr, "Errore di parsing\n");
+        fclose(yyin);
+        fclose(output);
+        libera_tabelle();
+        return EXIT_FAILURE;
+    }
 
     fclose(yyin);
     fclose(output);

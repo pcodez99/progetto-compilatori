@@ -38,7 +38,6 @@ Studente *lookup_studente(char *matricola);
 Corso *inserisci_corso(char *codice, char *nome, unsigned int cfu);
 Studente *inserisci_studente(char *matricola, char *nome, char *cognome);
 Esame *inserisci_esame(char *matricola, char *codice_corso, unsigned int voto, int lode);
-unsigned int calcola_cfu(Studente *studente);
 double calcola_media(Studente *studente);
 void salva_risultati(FILE *output);
 void libera_tabelle(void);
