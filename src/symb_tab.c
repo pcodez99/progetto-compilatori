@@ -36,18 +36,19 @@ Corso *inserisci_corso(char *codice, char *nome, unsigned int cfu) {
     Corso *corso;
     unsigned int hashval;
 
-    if ((corso = lookup_corso(codice)) == NULL) {
-        
-        if ((corso = (Corso *)malloc(sizeof(*corso)))==NULL) return NULL;
-
-        corso->codice = strdup(codice);
-        corso->nome = strdup(nome);
-
-        corso->cfu = cfu;
-        hashval = hash(codice);
-        corso->next = hash_table_corsi[hashval];
-        hash_table_corsi[hashval] = corso;
+    if (lookup_corso(codice) != NULL) {
+        fprintf(stderr, "error: line %d: semantic error: duplicate course '%s'\n", yylineno, codice);
+        exit(EXIT_FAILURE);
     }
+
+    if ((corso = malloc(sizeof(*corso))) == NULL) return NULL;
+
+    corso->codice = strdup(codice);
+    corso->nome = strdup(nome);
+    corso->cfu = cfu;
+    hashval = hash(codice);
+    corso->next = hash_table_corsi[hashval];
+    hash_table_corsi[hashval] = corso;
 
     return corso;
 }
@@ -72,21 +73,24 @@ Studente *inserisci_studente(char *matricola, char *nome, char *cognome) {
     Studente *studente;
     unsigned int hashval;
 
-    if ((studente = lookup_studente(matricola)) == NULL) {
-        
-        if ((studente = (Studente *)malloc(sizeof(*studente))) == NULL) return NULL;
-
-        studente->nome = strdup(nome);
-        studente->cognome = strdup(cognome);
-        studente->matricola = strdup(matricola);
-        studente->esami = NULL;
-        studente->bests = NULL;
-        studente->max = 0;
-        studente->media = 0.0f;
-        hashval = hash(matricola);
-        studente->next = hash_table_studenti[hashval];
-        hash_table_studenti[hashval] = studente;
+    if (lookup_studente(matricola) != NULL) {
+        fprintf(stderr, "error: line %d: semantic error: duplicate student '%s'\n", yylineno, matricola);
+        exit(EXIT_FAILURE);
     }
+
+    if ((studente = malloc(sizeof(*studente))) == NULL) return NULL;
+
+    studente->nome = strdup(nome);
+    studente->cognome = strdup(cognome);
+    studente->matricola = strdup(matricola);
+    studente->esami = NULL;
+    studente->bests = NULL;
+    studente->max = 0;
+    studente->media = 0.0f;
+    studente->carriera_dichiarata = 0;
+    hashval = hash(matricola);
+    studente->next = hash_table_studenti[hashval];
+    hash_table_studenti[hashval] = studente;
 
     return studente;
 }
@@ -117,16 +121,20 @@ Esame *inserisci_esame(char *matricola, char *codice_corso, unsigned int voto, i
 
     if (studente == NULL) {
         fprintf(stderr, "error: line %d: semantic error: undeclared student '%s'\n", yylineno, matricola);
-        exit(0);
+        exit(EXIT_FAILURE);
     }
     if (corso == NULL) {
         fprintf(stderr, "error: line %d: semantic error: undeclared course '%s'\n", yylineno, codice_corso);
-        exit(0);
+        exit(EXIT_FAILURE);
     }
 
-    if ((esame = cerca_esame(studente->esami, corso->codice)) == NULL) {
+    if (cerca_esame(studente->esami, corso->codice) != NULL) {
+        fprintf(stderr, "error: line %d: semantic error: duplicate exam '%s' for student '%s'\n",
+                yylineno, codice_corso, matricola);
+        exit(EXIT_FAILURE);
+    }
 
-        if ((esame = malloc(sizeof(*esame))) == NULL) return NULL;
+    if ((esame = malloc(sizeof(*esame))) == NULL) return NULL;
 
     unsigned int valore = lode ? 31 : voto;
 
@@ -144,9 +152,8 @@ Esame *inserisci_esame(char *matricola, char *codice_corso, unsigned int voto, i
         esame->next_best = studente->bests;
         studente->bests = esame;
     }
-        esame->next = studente->esami;
-        studente->esami = esame;
-    }
+    esame->next = studente->esami;
+    studente->esami = esame;
 
     studente->media = calcola_media(studente);
 

@@ -56,10 +56,16 @@ Elenco_Carriere: Carriera
     ;
 
 Carriera: MATRICOLA {
-        if (lookup_studente($1) == NULL) {
+        Studente *studente = lookup_studente($1);
+        if (studente == NULL) {
             fprintf(stderr, "error: line %d: semantic error: undeclared student '%s'\n", yylineno, $1);
-            exit(0);
+            exit(EXIT_FAILURE);
         }
+        if (studente->carriera_dichiarata) {
+            fprintf(stderr, "error: line %d: semantic error: duplicate career for student '%s'\n", yylineno, $1);
+            exit(EXIT_FAILURE);
+        }
+        studente->carriera_dichiarata = 1;
         studente_corrente = $1;
     } LAB Esami_Opzionali RAB
     ;

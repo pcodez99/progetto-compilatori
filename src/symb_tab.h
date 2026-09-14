@@ -26,6 +26,7 @@ typedef struct studente {
     char *cognome;
     unsigned int max;
     float media;
+    int carriera_dichiarata;
     Esame *esami;
     Esame *bests;
     struct studente *next;

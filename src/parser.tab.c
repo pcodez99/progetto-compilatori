@@ -449,8 +449,8 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint8 yyrline[] =
 {
        0,    28,    28,    31,    34,    35,    38,    41,    44,    45,
-      48,    51,    54,    55,    58,    58,    67,    68,    71,    72,
-      75,    75,    78,    79
+      48,    51,    54,    55,    58,    58,    73,    74,    77,    78,
+      81,    81,    84,    85
 };
 #endif
 
@@ -1388,32 +1388,38 @@ yyreduce:
   case 14:
 #line 58 "parser.y"
     {
-        if (lookup_studente((yyvsp[(1) - (1)].string_token)) == NULL) {
+        Studente *studente = lookup_studente((yyvsp[(1) - (1)].string_token));
+        if (studente == NULL) {
             fprintf(stderr, "error: line %d: semantic error: undeclared student '%s'\n", yylineno, (yyvsp[(1) - (1)].string_token));
-            exit(0);
+            exit(EXIT_FAILURE);
         }
+        if (studente->carriera_dichiarata) {
+            fprintf(stderr, "error: line %d: semantic error: duplicate career for student '%s'\n", yylineno, (yyvsp[(1) - (1)].string_token));
+            exit(EXIT_FAILURE);
+        }
+        studente->carriera_dichiarata = 1;
         studente_corrente = (yyvsp[(1) - (1)].string_token);
     ;}
     break;
 
   case 20:
-#line 75 "parser.y"
+#line 81 "parser.y"
     {corso_corrente = (yyvsp[(1) - (1)].string_token);;}
     break;
 
   case 22:
-#line 78 "parser.y"
+#line 84 "parser.y"
     {inserisci_esame(studente_corrente, corso_corrente, (yyvsp[(1) - (1)].int_token), 0);;}
     break;
 
   case 23:
-#line 79 "parser.y"
+#line 85 "parser.y"
     {inserisci_esame(studente_corrente, corso_corrente, 30, 1);;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1417 "parser.tab.c"
+#line 1423 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1627,7 +1633,7 @@ yyreturn:
 }
 
 
-#line 82 "parser.y"
+#line 88 "parser.y"
 
 int main(int argc, char **argv) {
     FILE *output;
