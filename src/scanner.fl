@@ -9,7 +9,10 @@
 ws [ \n\t]+
 COURSE_CODE [A-Z][0-9][0-9][0-9]
 COURSE_NAME \"[A-Za-z 0-9]+\"
+
+/* Riconoscere qui solo i CFU validi evita controlli semantici aggiuntivi. */
 CFU [0-9]|1[0-9]|20
+/* La stessa cosa vale per voto, lo validiamo nello scanner, se non arriva VOTO o CFU al parser, è errore sintattico */
 VOTO 1[89]|2[0-9]|30
 MATRICOLA [0-9]{10}
 STR [A-Za-z][A-Za-z]*
